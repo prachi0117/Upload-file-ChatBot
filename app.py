@@ -80,19 +80,17 @@ st.markdown(
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script>
-    
-
-    document.addEventListener('DOMContentLoaded', (event) => {
-        document.querySelectorAll('.copy-button').forEach(button => {
-            button.addEventListener('click', () => {
-                var copyText = button.previousElementSibling;
-                if (copyText) {
-                    navigator.clipboard.writeText(copyText.innerText);
-                    alert("Copied the text: " + copyText.innerText);
-                }
-            });
-        });
-    });
+    function copyToClipboard(elementId) {{
+                        const textToCopy = document.getElementById(elementId).innerText;
+                        navigator.clipboard.writeText(textToCopy)
+                            .then(() => {{
+                                console.log('Text copied to clipboard');
+                                alert('Text copied to clipboard: ' + textToCopy);
+                            }})
+                            .catch(err => {{
+                                console.error('Failed to copy text: ', err);
+                            }});
+                    }}
     </script>
     """,
     unsafe_allow_html=True
@@ -210,10 +208,30 @@ def main():
     if st.session_state.chat_history:
         st.markdown("<h3 class='menu-title'>Chat History:</h3>", unsafe_allow_html=True)
         for chat in st.session_state.chat_history:
-            with st.chat_message("user"):
-                st.markdown(chat["user"])
-            with st.chat_message("assistant"):
-                st.markdown(f"{chat['assistant']} <button class='copy-button' title='Copy to Clipboard'><i class='fas fa-copy'></i></button>", unsafe_allow_html=True)
+            user_icon_url = "https://via.placeholder.com/40/36ff33/FFFFFF/?text=U"  # Placeholder for user icon
+            bot_icon_url = "https://via.placeholder.com/40/3498DB/FFFFFF/?text=A"   # Placeholder for bot icon
+            st.markdown(
+                f"""
+                <div class="message-container">
+                    <img src="{user_icon_url}" class="icon" alt="User Icon">
+                    <div class="message-box user-message-box">
+                        <div class="message-text"><strong>User:</strong><br>{chat['user']}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )  
+            st.markdown(
+                f"""
+                <div class="message-container">
+                    <img src="{bot_icon_url}" class="icon" alt="Bot Icon">
+                    <div class="message-box assistant-message-box">
+                        <div class="message-text"><strong>Assistant:</strong><br>{chat['assistant']}</div>
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
     else:
         st.warning("No chat history available.")
     
@@ -224,61 +242,32 @@ def main():
         with st.spinner("Generating response..."):
             user_input(user_question)
     
-    # Control the visibility of chat history
-    # if "show_history" not in st.session_state:
-    #     st.session_state.show_history = False
-    
-    # Main content area
-    # st.markdown("<div class='container'>", unsafe_allow_html=True)
-    
-    # Main content area for chat history and user input
-    # st.markdown("<div class='main-content'>", unsafe_allow_html=True)
-    
-    
-    
-    # Display chat history if the flag is set
-   
-    
-    
-    # Button to toggle chat history visibility
-    # Add a button to toggle the chat history visibility
-    # toggle_button_text = "Hide History" if st.session_state.show_history else "Show History"
-    # if st.button(toggle_button_text):
-    #     st.session_state.show_history = not st.session_state.show_history
-
-    # st.markdown("</div>", unsafe_allow_html=True)
-    # st.markdown("</div>", unsafe_allow_html=True)  # Close the container div
     
     with st.sidebar:
         # Upload PDF files with size check
         st.markdown("<h2 class='menu-title'>Upload Files</h2>", unsafe_allow_html=True)
-        pdf_docs = st.file_uploader("Upload your PDF Files ", accept_multiple_files=True, type=['pdf'])
         
-        if st.button("Submit & Process PDFs"):
-            if not pdf_docs:
-                st.warning("Please upload PDF files before processing.")
-            else:
-                with st.spinner("Processing PDFs..."):
-                    raw_text = get_pdf_text(pdf_docs)
-                    text_chunks = get_text_chunks(raw_text)
-                    get_vector_store(text_chunks)
-                    st.balloons()
-                    st.success("PDF files have been processed, you can ask questions now!")
-
-        # Upload TXT files with size check
-        txt_files = st.file_uploader("Upload your TXT Files ", accept_multiple_files=True, type=['txt'])
+        uploaded_files = st.file_uploader("Upload your files (PDF or TXT)", type=["pdf", "txt"], accept_multiple_files=True)
         
-        if st.button("Submit & Process TXT"):
-            if not txt_files:
-                st.warning("Please upload TXT files before processing.")
-            else:
-                with st.spinner("Processing TXT files..."):
-                    raw_text = get_txt_text(txt_files)
-                    text_chunks = get_text_chunks(raw_text)
-                    get_vector_store(text_chunks)
-                    st.balloons()
-                    st.success("TXT files have been processed, you can ask questions now!")
+        if st.button("Submit & Process Files"):
+                if not uploaded_files:
+                    st.warning("Please upload PDF files before processing.")
+                else:
+                    with st.spinner("Processing files.."):
+                        for uploaded_file in uploaded_files:
+                            file_extension = uploaded_file.name.split(".")[-1].lower()
+                            if file_extension == "pdf":
+                                raw_text = get_pdf_text([uploaded_file])
+                            elif file_extension == "txt":
+                                raw_text = get_txt_text([uploaded_file])
+                            else:
+                                st.warning(f"Unsupported file type: {file_extension}")
+                                continue
 
+                            text_chunks = get_text_chunks(raw_text)
+                            get_vector_store(text_chunks)
+                        st.success("Documents processed successfully!")
+            
         # Input URLs with validation
         urls = st.text_area("Enter web URLs (one per line)").split("\n")
         urls = [url.strip() for url in urls if url.strip()]  # Clean empty entries
