@@ -204,13 +204,13 @@ def user_input(user_question):
         unsafe_allow_html=True
     )
 
-    download_data = "Question: {}\n\nAnswer:\n{}\n\nChunked Text with Indexes and Embeddings:\n".format(user_question, response['output_text'])
     
-    for i, chunk in enumerate(st.session_state.chat_history[-1]['chunks']):
+    download_data = "Question: {}\n\nAnswer:\n{}\n\nChunked Text with Indexes:\n".format(user_question, response['output_text'])
+    
+    for i, chunk in enumerate(st.session_state.chat_history[-1].get('chunks', [])):
         chunk_text = chunk.page_content
         download_data += f"\nChunk {i + 1}:\n{chunk_text}\n"
-        
-
+    
     st.download_button(
         label="Download Response Data",
         data=download_data,
