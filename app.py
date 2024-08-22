@@ -163,14 +163,6 @@ def user_input(user_question):
     
     chain = get_conversational_chain()
     response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
-
-    # Save the question and response to session state
-    st.session_state.chat_history.append({
-        "user": user_question,
-        "assistant": response["output_text"],
-        "chunks": docs,
-        "vector_store": new_db
-    })
     
     # Save the question and response to session state
     st.session_state.chat_history.append({"user": user_question, "assistant": response["output_text"]})
@@ -184,7 +176,7 @@ def user_input(user_question):
         <div class="message-container">
             <img src="{user_icon_url}" class="icon" alt="User Icon">
             <div class="message-box user-message-box">
-                <div class="message-text"><strong>User:</strong>{user_question}</div>
+                <div class="message-text"><strong>User:</strong><br>{user_question}</div>
             </div>
         </div>
         """,
@@ -197,27 +189,15 @@ def user_input(user_question):
         <div class="message-container">
             <img src="{bot_icon_url}" class="icon" alt="Bot Icon">
             <div class="message-box assistant-message-box">
-                <div class="message-text"><strong>Assistant:</strong>{response['output_text']}</div>
+                <div class="message-text">
+                    <strong>Assistant:</strong>
+                    <div>{response['output_text']}</div>
+                </div>
             </div>
         </div>
         """,
         unsafe_allow_html=True
     )
-
-    
-    download_data = "Question: {}\n\nAnswer:\n{}\n\nChunked Text with Indexes:\n".format(user_question, response['output_text'])
-    
-    for i, chunk in enumerate(st.session_state.chat_history[-1].get('chunks', [])):
-        chunk_text = chunk.page_content
-        download_data += f"\nChunk {i + 1}:\n{chunk_text}\n"
-    
-    st.download_button(
-        label="Download Response Data",
-        data=download_data,
-        file_name="response_data.txt",
-        mime="text/plain"
-    )
-    
 # Main function to run Streamlit app
 def main():
     st.markdown("<h1 class='title'>Chat with your GenieBot</h1>", unsafe_allow_html=True)
@@ -289,7 +269,6 @@ def main():
 
                             text_chunks = get_text_chunks(raw_text)
                             get_vector_store(text_chunks)
-                        text_chunks = get_text_chunks(raw_text)
                         st.success("Documents processed successfully!")
             
         # Input URLs with validation
