@@ -208,7 +208,6 @@ def user_input(user_question):
     
     for i, chunk in enumerate(st.session_state.chat_history[-1]['chunks']):
         chunk_text = chunk.page_content
-        
         download_data += f"\nChunk {i + 1}:\n{chunk_text}\n"
         
 
@@ -290,6 +289,7 @@ def main():
 
                             text_chunks = get_text_chunks(raw_text)
                             get_vector_store(text_chunks)
+                        text_chunks = get_text_chunks(raw_text)
                         st.success("Documents processed successfully!")
             
         # Input URLs with validation
