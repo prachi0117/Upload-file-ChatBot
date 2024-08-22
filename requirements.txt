@@ -31,6 +31,7 @@ datasets
 gradio
 langchain_nvidia_ai_endpoints
 crewai
+faiss-cpu
 crewai_tools
 neo4j==5.14
 langchain_experimental
