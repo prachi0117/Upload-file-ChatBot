@@ -202,46 +202,52 @@ def main():
     st.markdown("<h1 class='title'>Chat with your GenieBot</h1>", unsafe_allow_html=True)
     st.markdown("<h4 class='header'> Upload your PDF, DOCX, or URL: Transform Text into Insights </h2>", unsafe_allow_html=True)
 
-    
+    # Initialize chat history in session state if not present
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+        
+        
+    if st.session_state.chat_history:
+        st.markdown("<h3 class='menu-title'>Chat History:</h3>", unsafe_allow_html=True)
+        for chat in st.session_state.chat_history:
+            with st.chat_message("user"):
+                st.markdown(chat["user"])
+            with st.chat_message("assistant"):
+                st.markdown(f"{chat['assistant']} <button class='copy-button' title='Copy to Clipboard'><i class='fas fa-copy'></i></button>", unsafe_allow_html=True)
+    else:
+        st.warning("No chat history available.")
     
     # Input field for user's message
     user_question = st.chat_input("Ask a Question from the Processed Content")
 
     if user_question:
-        user_input(user_question)
-        
-    # Initialize chat history in session state if not present
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = []
+        with st.spinner("Generating response..."):
+            user_input(user_question)
     
     # Control the visibility of chat history
-    if "show_history" not in st.session_state:
-        st.session_state.show_history = False
+    # if "show_history" not in st.session_state:
+    #     st.session_state.show_history = False
     
     # Main content area
-    st.markdown("<div class='container'>", unsafe_allow_html=True)
+    # st.markdown("<div class='container'>", unsafe_allow_html=True)
     
     # Main content area for chat history and user input
-    st.markdown("<div class='main-content'>", unsafe_allow_html=True)
+    # st.markdown("<div class='main-content'>", unsafe_allow_html=True)
+    
+    
     
     # Display chat history if the flag is set
-    if st.session_state.show_history:
-        if st.session_state.chat_history:
-            st.markdown("<h3 class='menu-title'>Chat History:</h3>", unsafe_allow_html=True)
-            for chat in st.session_state.chat_history:
-                with st.chat_message("user"):
-                    st.markdown(chat["user"])
-                with st.chat_message("assistant"):
-                    st.markdown(f"{chat['assistant']} <button class='copy-button' title='Copy to Clipboard'><i class='fas fa-copy'></i></button>", unsafe_allow_html=True)
-        else:
-            st.warning("No chat history available.")
+   
+    
     
     # Button to toggle chat history visibility
-    if st.button("Hide History" if st.session_state.show_history else "Show History"):
-        st.session_state.show_history = not st.session_state.show_history
-    
-    st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)  # Close the container div
+    # Add a button to toggle the chat history visibility
+    # toggle_button_text = "Hide History" if st.session_state.show_history else "Show History"
+    # if st.button(toggle_button_text):
+    #     st.session_state.show_history = not st.session_state.show_history
+
+    # st.markdown("</div>", unsafe_allow_html=True)
+    # st.markdown("</div>", unsafe_allow_html=True)  # Close the container div
     
     with st.sidebar:
         # Upload PDF files with size check
