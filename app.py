@@ -176,7 +176,7 @@ def user_input(user_question):
         <div class="message-container">
             <img src="{user_icon_url}" class="icon" alt="User Icon">
             <div class="message-box user-message-box">
-                <div class="message-text"><strong>User:</strong><br>{user_question}</div>
+                <div class="message-text"><strong>**User:**</strong>{user_question}</div>
             </div>
         </div>
         """,
@@ -189,7 +189,7 @@ def user_input(user_question):
         <div class="message-container">
             <img src="{bot_icon_url}" class="icon" alt="Bot Icon">
             <div class="message-box assistant-message-box">
-                <div class="message-text"><strong>Assistant:</strong><br>{response['output_text']}</div>
+                <div class="message-text"><strong>**Assistant:**</strong>{response['output_text']}</div>
             </div>
         </div>
         """,
