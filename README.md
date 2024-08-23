@@ -14,3 +14,6 @@ the application should retrieve the relevant data chunks, make an API call to th
     that captures the meaning of the text in a high-dimensional space.
 4. Use FAISS(Faebook AI Similarity Search) for easy retrival and search the content
 5. provide a structured prompt for model
+
+Here is the deployed link:
+https://geniebot.streamlit.app/
