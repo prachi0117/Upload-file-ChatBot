@@ -15,6 +15,7 @@ from requests.exceptions import RequestException
 from bs4 import BeautifulSoup
 from docx import Document
 from io import BytesIO
+import streamlit.components.v1 as components
 
 # Set the page configuration at the top
 st.set_page_config(page_title="Chat with me", page_icon="🤖", layout="wide")
@@ -200,9 +201,26 @@ def user_input(user_question):
     )
 # Main function to run Streamlit app
 def main():
-    st.markdown("<h1 class='title'>Welcome to GenieBot</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 class='header'> Your Inetelligent Text Extractor and Assistant! </h3>", unsafe_allow_html=True)
-    st.markdown("<h4 class='header'>  </h4>", unsafe_allow_html=True)
+    
+    col1, col2 = st.columns([1, 9])  # Adjust the ratio as needed
+
+    # Display the image in the first column
+    with col1:
+        lottie_html = """
+        <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script><lottie-player src="https://lottie.host/6bf830e4-4790-4c33-af46-45c4412c3c82/l2NPulCfF6.json" background="transparent" speed="1" style="width: 300px; height: 300px" autoplay loop direction="1" mode="normal"></lottie-player>
+        """
+        
+        # HTML code for Lottie animation with a specified background color
+
+
+    # Display the Lottie animation
+    components.html(lottie_html, height=300)
+
+    # Display the title in the second column
+    with col2:
+        st.markdown("<h1 class='title'>Welcome to GenieBot</h1>", unsafe_allow_html=True)
+        st.markdown("<h3 class='header'> Your Inetelligent Text Extractor and Assistant! </h3>", unsafe_allow_html=True)
+        
 
     # Initialize chat history in session state if not present
     if "chat_history" not in st.session_state:
