@@ -200,8 +200,9 @@ def user_input(user_question):
     )
 # Main function to run Streamlit app
 def main():
-    st.markdown("<h1 class='title'>Chat with your GenieBot</h1>", unsafe_allow_html=True)
-    st.markdown("<h4 class='header'> Upload your PDF, DOCX, or URL: Transform Text into Insights </h2>", unsafe_allow_html=True)
+    st.markdown("<h1 class='title'>Welcome to GenieBot</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 class='header'> Your Inetelligent Text Extractor and Assistant! </h3>", unsafe_allow_html=True)
+    st.markdown("<h4 class='header'>  </h4>", unsafe_allow_html=True)
 
     # Initialize chat history in session state if not present
     if "chat_history" not in st.session_state:
